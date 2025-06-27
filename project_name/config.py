@@ -13,7 +13,7 @@ PROJECT_DIR = Path(__file__).parents[1].resolve()
 class Config(GoodConf):
     """Configuration for {{ project_name }}"""
 
-    DEBUG: bool = False
+    DEBUG: bool = True
     ALLOWED_HOSTS: list[str] = Field(
         default=["*"],
         description="Hosts allowed to serve the site "
@@ -40,19 +40,6 @@ class Config(GoodConf):
     ENVIRONMENT: str = Field(
         "development",
         description="Name of deployed environment (e.g. 'staging', 'production')",
-    )
-    BASIC_AUTH_CREDENTIALS: str = Field(
-        default="",
-        description="Basic Auth credentials for the site in the format 'username:password'",
-    )
-    SENTRY_DSN: str = Field(
-        default="",
-        description="Sentry DSN to enable error logging",
-    )
-    SENTRY_TRACES_SAMPLE_RATE: float = Field(
-        default=0.25,
-        description="Sentry trace sample rate "
-        "https://docs.sentry.io/product/sentry-basics/concepts/tracing/trace-view/",
     )
 
     model_config = {"default_files": ["{{ project_name }}.yml"]}
