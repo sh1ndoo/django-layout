@@ -5,7 +5,7 @@ from typing import Literal
 
 from goodconf import Field, GoodConf
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "{{ project_name }}.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 
 PROJECT_DIR = Path(__file__).parents[1].resolve()
 
