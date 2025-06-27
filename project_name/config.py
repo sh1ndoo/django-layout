@@ -25,7 +25,7 @@ class Config(GoodConf):
         "https://github.com/jazzband/dj-database-url#url-schema",
     )
     DJANGO_ENV: Literal["development", "dev", "production"] = Field(
-        default="production",
+        default="development",
         description="Toggle deployment settings for local development or production",
     )
     LOG_LEVEL: Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"] = Field(
