@@ -25,9 +25,9 @@ practices and some configuration setups frequently used in Lincoln Loop\'s proje
 3. run the following command (replace `YOUR_PROJECT_NAME` with your preferred name):
 
         django-admin startproject \
-         --template=https://github.com/lincolnloop/django-layout/zipball/main \
+         --template=https://github.com/sh1ndoo/django-layout/zipball/main \
          --extension=py,md,gitignore,yaml,json,toml \
-         --name=Makefile,Dockerfile \
+         --name=Dockerfile \
          --exclude=.github \
          YOUR_PROJECT_NAME
 
