@@ -28,10 +28,6 @@ class Config(GoodConf):
         default="development",
         description="Toggle deployment settings for local development or production",
     )
-    LOG_LEVEL: Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"] = Field(
-        default="INFO",
-        description="Python logging level",
-    )
     SECRET_KEY: str = Field(
         initial=lambda: base64.b64encode(os.urandom(60)).decode(),
         description="A long random string you keep secret "
