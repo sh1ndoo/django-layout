@@ -16,7 +16,6 @@ from pathlib import Path
 from typing import Any
 
 import dj_database_url
-import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
 from .config import config
@@ -48,20 +47,16 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "django_alive",
 ]
 
 MIDDLEWARE = [
-    "django_alive.middleware.healthcheck_bypass_host_check",
     "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "csp.middleware.CSPMiddleware",
 ]
 
 ROOT_URLCONF = "{{ project_name }}.urls"
@@ -119,7 +114,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/{{ docs_version }}/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "ru-RU"
 
 TIME_ZONE = "UTC"
 
@@ -138,19 +133,11 @@ STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 STATICFILES_DIRS = [
-    BASE_DIR / "{{ project_name }}" / "static",
-    BASE_DIR / "client" / "dist",
+    BASE_DIR / "{{ project_name }}" / "static"
 ]
 
 # Whitenoise
 # http://whitenoise.evans.io/en/stable/
-
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-
-# Match filename with 12 hex digits before the extension
-WHITENOISE_IMMUTABLE_FILE_TEST = lambda _, url: re.match(  # noqa: E731
-    r"^.+\.[0-9a-f]{12}\..+$", url
-)
 
 
 # Default primary key field type
@@ -158,79 +145,7 @@ WHITENOISE_IMMUTABLE_FILE_TEST = lambda _, url: re.match(  # noqa: E731
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# SSL
-# https://github.com/lincolnloop/django-alive#disabling-allowed_hosts-for-healthchecks
-SECURE_REDIRECT_EXEMPT = [r"^-/"]  # django-alive URLs
 
-# CSP
-# https://django-csp.readthedocs.io/en/latest/configuration.html#configuration-chapter
-CSP_DEFAULT_SRC = ("'self'",)
-
-X_FRAME_OPTIONS = "DENY"
-REFERRER_POLICY = "same-origin"
-
-
-def log_format() -> str:
-    """
-    Dump all available values into the JSON log output
-    """
-    keys = (
-        "asctime",
-        "created",
-        "levelname",
-        "levelno",
-        "filename",
-        "funcName",
-        "lineno",
-        "module",
-        "message",
-        "name",
-        "pathname",
-        "process",
-        "processName",
-    )
-    return " ".join([f"%({i:s})" for i in keys])
-
-
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters": {
-        "default": {
-            "format": log_format(),
-            "class": "pythonjsonlogger.jsonlogger.JsonFormatter",
-        },
-    },
-    "handlers": {
-        # console logs to stderr
-        "console": {
-            "class": "logging.StreamHandler",
-            "formatter": "default",
-        },
-    },
-    "loggers": {
-        # default for all Python modules not listed below
-        "": {
-            "level": "WARNING",
-            "handlers": ["console"],
-        },
-        # Our application code
-        "{{ project_name }}": {
-            "level": config.LOG_LEVEL,
-            "handlers": ["console"],
-            # Avoid double logging because of root logger
-            "propagate": False,
-        },
-    },
-}
-
-# setup pretty logging for local dev
-with contextlib.suppress(ModuleNotFoundError):
-    import readable_log_formatter  # noqa: F401
-
-    LOGGING["formatters"]["default"] = {
-        "()": "readable_log_formatter.ReadableFormatter",
-    }
 
 if config.DJANGO_ENV == "production":
     CSRF_COOKIE_SECURE = True
@@ -244,21 +159,3 @@ if config.DJANGO_ENV == "production":
     SECURE_HSTS_SECONDS = 31536000
     SECURE_HSTS_PRELOAD = True
 
-
-def _sentry_traces_sampler(ctx: dict[str, Any]) -> float:
-    """Don't capture traces on static files or healthchecks."""
-    wsgi_environ = ctx.get("wsgi_environ", {})
-    path = wsgi_environ.get("PATH_INFO", "")
-    is_healthcheck = path.startswith("/-/")
-    is_static = path.startswith("/static/")
-    return 0 if is_static or is_healthcheck else config.SENTRY_TRACES_SAMPLE_RATE
-
-
-if config.SENTRY_DSN:
-    sentry_sdk.init(
-        dsn=config.SENTRY_DSN,
-        integrations=[DjangoIntegration()],
-        environment=config.ENVIRONMENT,
-        send_default_pii=True,
-        traces_sampler=_sentry_traces_sampler,
-    )
