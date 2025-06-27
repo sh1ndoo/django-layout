@@ -26,11 +26,3 @@ from django.core.wsgi import get_wsgi_application
 from .config import config
 
 application = get_wsgi_application()
-if config.BASIC_AUTH_CREDENTIALS:
-    import wsgi_basic_auth
-
-    application = wsgi_basic_auth.BasicAuth(
-        app=application,
-        users=dict([config.BASIC_AUTH_CREDENTIALS.split(":", 1)]),
-        exclude_paths=["/-/"],
-    )
