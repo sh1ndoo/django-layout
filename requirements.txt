@@ -1,0 +1,14 @@
+annotated-types==0.7.0
+asgiref==3.8.1
+dj-database-url==3.0.0
+Django==5.2.3
+goodconf==6.1.2
+pydantic==2.11.7
+pydantic-settings==2.10.1
+pydantic_core==2.33.2
+python-dotenv==1.1.1
+ruamel.yaml==0.18.14
+ruamel.yaml.clib==0.2.12
+sqlparse==0.5.3
+typing-inspection==0.4.1
+typing_extensions==4.14.0
