@@ -30,6 +30,15 @@ practices and some configuration setups frequently used in Lincoln Loop\'s proje
          --name=Dockerfile \
          --exclude=.github \
          YOUR_PROJECT_NAME
+   
+4. run this script to configure config.yaml file
+
+        from config.config import config
+        config_instance = config
+        yaml_output = config_instance.generate_yaml()
+        with open("myproject.yaml", "w") as f:
+           f.write(yaml_output)
+        print("Configuration successfully generated to myproject.yaml")
 
 ### With `uv`
 
