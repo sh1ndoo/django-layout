@@ -38,7 +38,7 @@ class Config(GoodConf):
         description="Name of deployed environment (e.g. 'staging', 'production')",
     )
 
-    model_config = {"default_files": ["{{ project_name }}.yml"]}
+    model_config = {"default_files": ["config.yml"]}
 
 
 config = Config()
