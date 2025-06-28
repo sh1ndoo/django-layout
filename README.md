@@ -36,9 +36,9 @@ practices and some configuration setups frequently used in Lincoln Loop\'s proje
         from config.config import config
         config_instance = config
         yaml_output = config_instance.generate_yaml()
-        with open("myproject.yaml", "w") as f:
+        with open("config.yaml", "w") as f:
            f.write(yaml_output)
-        print("Configuration successfully generated to myproject.yaml")
+        print("Configuration successfully generated to config.yaml")
 
 ### With `uv`
 
