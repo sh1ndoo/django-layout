@@ -16,7 +16,6 @@ from pathlib import Path
 from typing import Any
 
 import dj_database_url
-from sentry_sdk.integrations.django import DjangoIntegration
 
 from .config import config
 
